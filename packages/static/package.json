@@ -16,8 +16,8 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "test": "echo 'TODO: add tests'",
-    "test:run": "vitest run",
+    "test": "vitest",
+    "test:run": "echo 'TODO: add tests'",
     "typecheck": "tsc --noEmit"
   },
   "author": "uhyo <uhyo@uhy.ooo>",
