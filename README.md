@@ -8,6 +8,7 @@ A maximally minimal React framework.
 **Features:**
 
 - :x: **No server runs** - perfect for CSR (Client Side Rendering) app and static deployment.
+- :x: **No RCE vulnerabilities** - No server, no risk.
 - :white_check_mark: **RSC support** - React Server Components are supported even without a server which helps reduce bundle size and improve performance.
 - :white_check_mark: **Vite-based** - so minimal that this framework is served as a Vite plugin (based on [@vitejs/plugin-rsc](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc#readme))
 
@@ -32,6 +33,17 @@ export default defineConfig({
 });
 ```
 
+### See the framework in action
+
+```sh
+pnpm install
+pnpm build
+# Start a development server
+pnpm --filter funstack-static-example dev
+# Start a preview of the production build
+pnpm --filter funstack-static-example preview
+
 ## License
 
 MIT
+```
