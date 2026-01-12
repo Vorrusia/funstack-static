@@ -47,7 +47,3 @@ pnpm --filter funstack-static-example preview
 ## License
 
 MIT
-
-```
-
-```
