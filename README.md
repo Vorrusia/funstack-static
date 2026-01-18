@@ -1,5 +1,7 @@
 ## FUNSTACK Static
 
+![Hero Image](./docs/FUNSTACK_Static_Hero_small.png)
+
 A maximally minimal React framework.
 
 > [!WARNING]
@@ -10,11 +12,14 @@ A maximally minimal React framework.
 - :x: **No server runs** - perfect for CSR (Client Side Rendering) app and static deployment.
 - :x: **No RCE vulnerabilities** - No server, no risk.
 - :white_check_mark: **RSC support** - React Server Components are supported even without a server which helps reduce bundle size and improve performance.
+- :white_check_mark: **Server Component Code Splitting** - a brand new `defer()` API allows you to split RSC Payload into multiple chunks and load them on demand.
 - :white_check_mark: **Vite-based** - so minimal that this framework is served as a Vite plugin (based on [@vitejs/plugin-rsc](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc#readme))
 
 ### Usage
 
-See [the example project](./packages/example/vite.config.ts) for complete usage.
+**[Documentation](https://uhyo.github.io/funstack-static/)**
+
+See [the example project](./packages/example/vite.config.ts) and [the docs project](./packages/docs/vite.config.ts) for complete usage.
 
 ```ts
 // vite.config.ts
