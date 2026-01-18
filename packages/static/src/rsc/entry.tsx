@@ -1,23 +1,17 @@
+import "./send";
 import { renderToReadableStream } from "@vitejs/plugin-rsc/rsc";
-import { parseRenderRequest } from "./request";
-import Root from "virtual:funstack/root";
-import App from "virtual:funstack/app";
+import { devMainRscPath } from "./request";
 import { generateAppMarker } from "./marker";
+import { sendRegistry } from "./send";
+import { extractIDFromModulePath } from "./rscModule";
 
-// The schema of payload which is serialized into RSC stream on rsc environment
-// and deserialized on ssr/client environments.
 export type RscPayload = {
-  // this demo renders/serializes/deserizlies entire root html element
-  // but this mechanism can be changed to render/fetch different parts of components
-  // based on your own route conventions.
   root: React.ReactNode;
 };
 
-// Note: @vite/plugin-rsc assumes `rsc` entry having default export of request handler.
-export default async function handler(request: Request): Promise<Response> {
-  // differentiate RSC, SSR, action, etc.
-  const renderRequest = parseRenderRequest(request);
-  request = renderRequest.request;
+async function devMainRSCStream() {
+  const Root = (await import("virtual:funstack/root")).default;
+  const App = (await import("virtual:funstack/app")).default;
 
   // Sanity check; this may happen when user-provided entry file
   // does not have a default export.
@@ -32,8 +26,6 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
-  const marker = generateAppMarker();
-
   const rootRscStream = renderToReadableStream<RscPayload>({
     root: (
       <Root>
@@ -41,21 +33,17 @@ export default async function handler(request: Request): Promise<Response> {
       </Root>
     ),
   });
+  return rootRscStream;
+}
 
-  // Respond RSC stream without HTML rendering as decided by `RenderRequest`
-  if (renderRequest.isRsc) {
-    return new Response(rootRscStream, {
-      status: 200,
-      headers: {
-        "content-type": "text/x-component;charset=utf-8",
-      },
-    });
-  }
+/**
+ * Entrypoint to serve HTML response in dev environment
+ */
+export async function serveHTML(): Promise<Response> {
+  const marker = generateAppMarker();
 
-  // Delegate to SSR environment for html rendering.
-  // The plugin provides `loadModule` helper to allow loading SSR environment entry module
-  // in RSC environment. however this can be customized by implementing own runtime communication
-  // e.g. `@cloudflare/vite-plugin`'s service binding.
+  const rootRscStream = await devMainRSCStream();
+
   const ssrEntryModule = await import.meta.viteRsc.loadModule<
     typeof import("../ssr/entry")
   >("ssr");
@@ -73,11 +61,79 @@ export default async function handler(request: Request): Promise<Response> {
   });
 }
 
+class ServeRSCError extends Error {
+  status: 404 | 500;
+  constructor(message: string, status: 404 | 500) {
+    super(message);
+    this.name = "ServeRSCError";
+    this.status = status;
+  }
+}
+
+export function isServeRSCError(error: unknown): error is ServeRSCError {
+  return error instanceof Error && error.name === "ServeRSCError";
+}
+
+/**
+ * Servers an RSC stream response
+ */
+export async function serveRSC(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  if (url.pathname === devMainRscPath) {
+    // root RSC stream is requested
+    const rootRscStream = await devMainRSCStream();
+    return new Response(rootRscStream, {
+      status: 200,
+      headers: {
+        "content-type": "text/x-component;charset=utf-8",
+      },
+    });
+  }
+
+  const moduleId = extractIDFromModulePath(url.pathname);
+  if (!moduleId) {
+    throw new ServeRSCError(`Invalid RSC module path: ${url.pathname}`, 404);
+  }
+
+  const entry = sendRegistry.load(moduleId);
+  if (!entry) {
+    throw new ServeRSCError(`RSC component not found: ${moduleId}`, 404);
+  }
+  const { state } = entry;
+  switch (state.state) {
+    case "streaming": {
+      return new Response(state.stream, {
+        status: 200,
+        headers: {
+          "content-type": "text/x-component;charset=utf-8",
+        },
+      });
+    }
+    case "ready": {
+      return new Response(state.data, {
+        status: 200,
+        headers: {
+          "content-type": "text/x-component;charset=utf-8",
+        },
+      });
+    }
+    case "error": {
+      throw new ServeRSCError(
+        `Failed to load RSC component: ${state.error}`,
+        500,
+      );
+    }
+  }
+}
+
 /**
  * Build handler
  */
 export async function build() {
   const marker = generateAppMarker();
+
+  const Root = (await import("virtual:funstack/root")).default;
+  const App = (await import("virtual:funstack/app")).default;
 
   const rootRscStream = renderToReadableStream<RscPayload>({
     root: (
@@ -103,8 +159,11 @@ export async function build() {
   return {
     html: ssrResult.stream,
     appRsc: appRscStream,
+    sendRegistry,
   };
 }
+
+export { send } from "./send";
 
 if (import.meta.hot) {
   import.meta.hot.accept();
