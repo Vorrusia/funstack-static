@@ -1,8 +1,8 @@
-import "./send";
+import "./defer";
 import { renderToReadableStream } from "@vitejs/plugin-rsc/rsc";
 import { devMainRscPath } from "./request";
 import { generateAppMarker } from "./marker";
-import { sendRegistry } from "./send";
+import { deferRegistry } from "./defer";
 import { extractIDFromModulePath } from "./rscModule";
 
 export type RscPayload = {
@@ -95,7 +95,7 @@ export async function serveRSC(request: Request): Promise<Response> {
     throw new ServeRSCError(`Invalid RSC module path: ${url.pathname}`, 404);
   }
 
-  const entry = sendRegistry.load(moduleId);
+  const entry = deferRegistry.load(moduleId);
   if (!entry) {
     throw new ServeRSCError(`RSC component not found: ${moduleId}`, 404);
   }
@@ -159,11 +159,11 @@ export async function build() {
   return {
     html: ssrResult.stream,
     appRsc: appRscStream,
-    sendRegistry,
+    deferRegistry,
   };
 }
 
-export { send } from "./send";
+export { defer } from "./defer";
 
 if (import.meta.hot) {
   import.meta.hot.accept();

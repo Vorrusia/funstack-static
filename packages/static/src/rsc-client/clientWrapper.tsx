@@ -5,9 +5,9 @@ import {
 } from "@vitejs/plugin-rsc/browser";
 import { getModulePathFor } from "../rsc/rscModule";
 import { createContext, use } from "react";
-import type { LoadedSendEntry, SendRegistry } from "../rsc/send";
+import type { LoadedDeferEntry, DeferRegistry } from "../rsc/defer";
 
-export const RegistryContext = createContext<SendRegistry | undefined>(
+export const RegistryContext = createContext<DeferRegistry | undefined>(
   undefined,
 );
 
@@ -32,7 +32,7 @@ export const ClientWrapper: React.FC<ClientWrapperProps> = ({ moduleID }) => {
 const moduleToStreamMap = new Map<string, Promise<React.ReactNode>>();
 
 async function getRSCStreamFromRegistry(
-  entry: LoadedSendEntry,
+  entry: LoadedDeferEntry,
 ): Promise<React.ReactNode> {
   switch (entry.state.state) {
     case "streaming": {

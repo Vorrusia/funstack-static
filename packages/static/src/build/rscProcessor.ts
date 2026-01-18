@@ -22,18 +22,18 @@ interface RawComponent {
 /**
  * Processes RSC components by replacing temporary UUIDs with content-based hashes.
  *
- * @param sendRegistryIterator - Iterator yielding components with { id, data }
+ * @param deferRegistryIterator - Iterator yielding components with { id, data }
  * @param appRscStream - The main RSC stream
  * @param context - Optional context for logging warnings
  */
 export async function processRscComponents(
-  sendRegistryIterator: AsyncIterable<RawComponent>,
+  deferRegistryIterator: AsyncIterable<RawComponent>,
   appRscStream: ReadableStream,
   context?: { warn: (message: string) => void },
 ): Promise<ProcessResult> {
-  // Step 1: Collect all components from sendRegistry
+  // Step 1: Collect all components from deferRegistry
   const components = new Map<string, string>();
-  for await (const { id, data } of sendRegistryIterator) {
+  for await (const { id, data } of deferRegistryIterator) {
     components.set(id, data);
   }
 

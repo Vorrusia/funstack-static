@@ -6,7 +6,7 @@ import type { RscPayload } from "../rsc/entry";
 import { appClientManifestVar } from "../client/globals";
 import { rscPayloadPath } from "../build/rscPath";
 import { preload } from "react-dom";
-import type { SendRegistry } from "../rsc/send";
+import type { DeferRegistry } from "../rsc/defer";
 import { RegistryContext } from "#rsc-client";
 
 export async function renderHTML(
@@ -15,7 +15,7 @@ export async function renderHTML(
     appEntryMarker: string;
     build: boolean;
     nonce?: string;
-    sendRegistry?: SendRegistry;
+    deferRegistry?: DeferRegistry;
   },
 ): Promise<{ stream: ReadableStream<Uint8Array>; status?: number }> {
   const [rscStream1, rscStream2] = rscStream.tee();
@@ -32,7 +32,7 @@ export async function renderHTML(
       });
     }
     return (
-      <RegistryContext value={options.sendRegistry}>
+      <RegistryContext value={options.deferRegistry}>
         {use(payload).root}
       </RegistryContext>
     );

@@ -2,7 +2,7 @@ import { Router } from "@funstack/router";
 import { route, type RouteDefinition } from "@funstack/router/server";
 import GettingStarted from "./pages/GettingStarted.mdx";
 import { Home } from "./pages/Home";
-import { send } from "@funstack/static/entries/rsc";
+import { defer } from "@funstack/static/entries/rsc";
 
 const routes: RouteDefinition[] = [
   route({
@@ -11,7 +11,7 @@ const routes: RouteDefinition[] = [
   }),
   route({
     path: "/getting-started",
-    component: send(GettingStarted),
+    component: defer(GettingStarted),
   }),
 ];
 

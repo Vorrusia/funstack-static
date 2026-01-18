@@ -4,15 +4,15 @@ import { ClientWrapper } from "#rsc-client";
 import { drainStream } from "../util/drainStream";
 import { getPayloadIDFor } from "./rscModule";
 
-export interface SendEntry {
-  state: SendEntryState;
+export interface DeferEntry {
+  state: DeferEntryState;
 }
 
-export interface LoadedSendEntry extends SendEntry {
-  state: Exclude<SendEntryState, { state: "pending" }>;
+export interface LoadedDeferEntry extends DeferEntry {
+  state: Exclude<DeferEntryState, { state: "pending" }>;
 }
 
-type SendEntryState =
+type DeferEntryState =
   | {
       state: "pending";
       component: FC<{}>;
@@ -30,8 +30,8 @@ type SendEntryState =
       error: unknown;
     };
 
-export class SendRegistry {
-  #registry = new Map<string, SendEntry>();
+export class DeferRegistry {
+  #registry = new Map<string, DeferEntry>();
   #finalization = new FinalizationRegistry((id: string) => {
     this.#registry.delete(id);
   });
@@ -41,7 +41,7 @@ export class SendRegistry {
     this.#finalization.register(component, id);
   }
 
-  load(id: string): LoadedSendEntry | undefined {
+  load(id: string): LoadedDeferEntry | undefined {
     const entry = this.#registry.get(id);
     if (!entry) {
       return undefined;
@@ -49,7 +49,7 @@ export class SendRegistry {
     return this.#loadEntry(entry);
   }
 
-  #loadEntry(entry: SendEntry): LoadedSendEntry {
+  #loadEntry(entry: DeferEntry): LoadedDeferEntry {
     const { state } = entry;
     switch (state.state) {
       case "pending": {
@@ -72,12 +72,12 @@ export class SendRegistry {
         })().catch((error) => {
           entry.state = { state: "error", error };
         });
-        return entry as LoadedSendEntry;
+        return entry as LoadedDeferEntry;
       }
       case "streaming":
       case "ready":
       case "error": {
-        return entry as LoadedSendEntry;
+        return entry as LoadedDeferEntry;
       }
     }
     state satisfies never;
@@ -162,17 +162,17 @@ export class SendRegistry {
   }
 }
 
-export const sendRegistry = new SendRegistry();
+export const deferRegistry = new DeferRegistry();
 
 const referenceIDMap = new WeakMap<FC<{}>, string>();
 
-export function send(component: FC<{}>): React.ReactNode {
+export function defer(component: FC<{}>): React.ReactNode {
   let id = referenceIDMap.get(component);
   if (id === undefined) {
     id = getPayloadIDFor(crypto.randomUUID());
   }
   referenceIDMap.set(component, id);
-  sendRegistry.register(component, id);
+  deferRegistry.register(component, id);
 
   return <ClientWrapper moduleID={id} />;
 }

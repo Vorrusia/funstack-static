@@ -21,12 +21,12 @@ export async function buildApp(
 
   // render rsc and html
   const baseDir = config.environments.client.build.outDir;
-  const { html, appRsc, sendRegistry } = await entry.build();
+  const { html, appRsc, deferRegistry } = await entry.build();
   await writeFileStream(path.join(baseDir, "index.html"), html, context);
 
   // Process RSC components with content-based hashes for deterministic file names
   const { components, appRscContent } = await processRscComponents(
-    sendRegistry.loadAll(),
+    deferRegistry.loadAll(),
     appRsc,
     context,
   );
