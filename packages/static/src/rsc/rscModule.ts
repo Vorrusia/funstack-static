@@ -12,16 +12,23 @@ export function getPayloadIDFor(rawId: string): string {
 }
 
 const rscModulePathPrefix = "/.funstack/rsc/";
+const rscModulePathSuffix = ".txt";
 
 export function getModulePathFor(id: string): string {
-  return `${rscModulePathPrefix}${id}`;
+  return `${rscModulePathPrefix}${id}${rscModulePathSuffix}`;
 }
 
 export function extractIDFromModulePath(
   modulePath: string,
 ): string | undefined {
-  if (!modulePath.startsWith(rscModulePathPrefix)) {
+  if (
+    !modulePath.startsWith(rscModulePathPrefix) ||
+    !modulePath.endsWith(rscModulePathSuffix)
+  ) {
     return undefined;
   }
-  return modulePath.slice(rscModulePathPrefix.length);
+  return modulePath.slice(
+    rscModulePathPrefix.length,
+    -rscModulePathSuffix.length,
+  );
 }

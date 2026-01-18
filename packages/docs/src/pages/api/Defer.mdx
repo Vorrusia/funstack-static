@@ -85,7 +85,7 @@ const routes = [
 
 ## How It Works
 
-By default, FUNSTACK Static puts the entire app (`<App />`) into one RSC payload (`/.funstack/index.rsc`). The client fetches this payload to render your SPA.
+By default, FUNSTACK Static puts the entire app (`<App />`) into one RSC payload (`/.funstack/index.txt`). The client fetches this payload to render your SPA.
 
 When you use `defer(Component)`, FUNSTACK Static creates **additional RSC payloads** for the rendering result of `<Component />`. This results in an additional emit of RSC payload files like `/.funstack/rsc/fun:rsc-payload/b5698be72eea3c37`.
 
