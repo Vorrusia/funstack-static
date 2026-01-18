@@ -49,7 +49,7 @@ export const Home: React.FC = () => {
               </svg>
             </a>
             <a
-              href="https://github.com/user/funstack-static"
+              href="https://github.com/uhyo/funstack-static"
               className={styles.secondaryButton}
             >
               <svg
