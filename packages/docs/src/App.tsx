@@ -1,4 +1,4 @@
-import { Outlet, Router } from "@funstack/router";
+import { Outlet } from "@funstack/router";
 import { route, type RouteDefinition } from "@funstack/router/server";
 import { defer } from "@funstack/static/server";
 import { Layout } from "./components/Layout/Layout";
@@ -7,6 +7,7 @@ import FunstackStaticApi from "./pages/api/FunstackStatic.mdx";
 import RSCConcept from "./pages/concepts/RSC.mdx";
 import GettingStarted from "./pages/GettingStarted.mdx";
 import { Home } from "./pages/Home";
+import { Router } from "./Router";
 
 const routes: RouteDefinition[] = [
   route({
