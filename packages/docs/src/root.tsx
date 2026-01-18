@@ -18,6 +18,28 @@ export default function Root({ children }: { children: React.ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
         />
+        <script>
+          {`
+// GitHub Pages SPA redirect hack - restore URL from query params
+// See: https://github.com/rafgraph/spa-github-pages
+(function (l) {
+  if (l.search[1] === "p") {
+    var decoded = l.search
+      .slice(3)
+      .split("&")
+      .map(function (s) {
+        return s.replace(/~and~/g, "&");
+      })
+      .join("?");
+    window.history.replaceState(
+      null,
+      "",
+      l.pathname.slice(0, -1) + "/" + decoded + l.hash,
+    );
+  }
+})(window.location);
+            `}
+        </script>
       </head>
       <body>{children}</body>
     </html>
