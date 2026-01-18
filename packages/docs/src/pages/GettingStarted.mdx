@@ -68,9 +68,44 @@ The Root component:
 
 ### 3. Create Your App Component
 
-The App component defines what comes into the `children` of the Root.
+The App component defines what comes into the `children` of the Root. This is the entrypoint of your SPA.
 
-This is the entrypoint of your SPA and you can do anything you want. If you want routing, you can bring your favorite SPA router. Here, we use `@funstack/router` as an example:
+Since the App component is a server component, for interactivity you can import and use client components inside it.
+
+```tsx
+// src/App.tsx
+import Counter from "./Counter";
+
+export default function App() {
+  return (
+    <main>
+      <h1>Welcome to my site!</h1>
+      <Counter />
+    </main>
+  );
+}
+```
+
+```tsx
+// src/Counter.tsx
+"use client";
+
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+```
+
+The App component:
+
+- is a server component
+- **CAN** import client components and use them within the app
+
+### 4. Add Routing (Optional)
+
+If you want routing, you can bring your favorite SPA router. Here, we use `@funstack/router` as an example:
 
 ```tsx
 // src/App.tsx
@@ -93,12 +128,7 @@ export default function App() {
 }
 ```
 
-The App component:
-
-- is a server component
-- **CAN** import client components and use them within the app
-
-### 4. Start Development Server
+### 5. Start Development Server
 
 ```bash
 npm run dev
@@ -106,13 +136,15 @@ npm run dev
 
 Your site is now running at `http://localhost:5173`!
 
-### 5. Build for Production
+### 6. Build for Production
 
 ```bash
 npm run build
 ```
 
 Your SPA is pre-rendered to static files in the `dist/public` directory, ready to deploy to any static hosting provider.
+
+Since FUNSTACK Static is built on top of Vite, any Vite configurations and plugins should work seamlessly.
 
 ## Project Structure
 
@@ -133,6 +165,6 @@ Only two files are required: `Root.tsx` and `App.tsx`. The paths to these files 
 
 ## What's Next?
 
-- Learn about the [funstackStatic() API](/api/funstack-static) for configuration options
-- Understand [defer()](/api/defer) for streaming content
-- Dive into [React Server Components](/concepts/rsc) concepts
+- Learn about the [funstackStatic() Plugin API](/funstack-static/api/funstack-static) for configuration options
+- Understand [defer()](/funstack-static/api/defer) for Server Component chunk splitting
+- Dive into [React Server Components](/funstack-static/concepts/rsc) concepts

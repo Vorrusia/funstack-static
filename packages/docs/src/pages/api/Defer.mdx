@@ -1,10 +1,13 @@
 # defer()
 
-The `defer()` function enables deferred rendering for React Server Components, allowing content to be streamed progressively to the client.
+The `defer()` function enables deferred rendering for React Server Components, reducing initial data load.
+
+You can think of this as React's `lazy` API but for Server Components.
 
 ## Import
 
 ```typescript
+// @funstack/static/server is where utilities for server components live
 import { defer } from "@funstack/static/server";
 ```
 
@@ -12,126 +15,78 @@ import { defer } from "@funstack/static/server";
 
 ```tsx
 import { defer } from "@funstack/static/server";
-import { route } from "@funstack/router/server";
-import HeavyComponent from "./HeavyComponent";
+import { HeavyServerComponent } from "./HeavyServerComponent";
 
-const routes = [
-  route({
-    path: "/",
-    component: defer(HeavyComponent),
-  }),
-];
+function Page() {
+  return (
+    <details>
+      <summary>Very long description</summary>
+      <Suspense fallback={<p>Loading...</p>}>
+        {defer(HeavyServerComponent)}
+      </Suspense>
+    </details>
+  );
+}
 ```
+
+By using `defer()`, the `HeavyServerComponent` will still be rendered on the server (during build), but its data will be sent to the client as a separate RSC payload.
+
+This means that:
+
+- Client can start rendering the rest of the page without waiting for `HeavyServerComponent`'s data
+- When the `defer(HeavyServerComponent)` part is rendered on the client, it will fetch the separate RSC payload and show the content.
+
+The key point is that `HeavyServerComponent` is still a Server Component, so only the rendered HTML (and usage of Client Components inside it) is sent to the client, not the component code itself.
+
+**Note:** you cannot pass any props to the component wrapped with `defer()`. This limitation may be lifted in the future.
+
+**Note:** `defer()` must be used inside a `Suspense` boundary since the content will be streamed in later.
 
 ## Signature
 
 ```typescript
-function defer<T extends React.ComponentType<any>>(
-  Component: T,
-): React.ReactNode;
+export function defer(component: FC<{}>): React.ReactNode;
 ```
 
 ### Parameters
 
-- **Component:** A React component to render with deferred streaming.
+- **component:** A server component to render with deferred loading.
 
 ### Returns
 
-A React node that will stream its content when rendered.
+A React Node that will stream its content separately from the main entry point.
 
 ## When to Use defer()
 
 Use `defer()` when you have components that:
 
-- Fetch data asynchronously (e.g., from APIs or databases)
-- Perform expensive computations
-- Include large amounts of content
-- Have children that can be rendered independently
+- Renders large HTML content
+- Is not immediately visible on page load (e.g., inside a collapsed section)
+
+Typically, you will want to wrap route components with `defer()` to improve initial load performance. Otherwise, user needs to wait for contents for all pages to arrive before seeing anything.
 
 ```tsx
-// Async component that fetches data
-async function BlogPosts() {
-  const posts = await fetchPosts(); // Slow API call
+import { defer } from "@funstack/static/server";
+import HomePage from "./HomePage";
+import AboutPage from "./AboutPage";
 
-  return (
-    <ul>
-      {posts.map((post) => (
-        <li key={post.id}>{post.title}</li>
-      ))}
-    </ul>
-  );
-}
-
-// Wrap with defer() to stream
-route({
-  path: "/blog",
-  component: defer(BlogPosts),
-});
+const routes = [
+  route({
+    path: "/",
+    component: defer(HomePage),
+  }),
+  route({
+    path: "/about",
+    component: defer(AboutPage),
+  }),
+  // ...
+];
 ```
 
 ## How It Works
 
-1. **Without defer():** The entire page waits for all components to render before sending any HTML.
+By default, FUNSTACK Static puts the entire app (`<App />`) into one RSC payload (`/.funstack/index.rsc`). The client fetches this payload to render your SPA.
 
-2. **With defer():**
-   - The page shell renders immediately
-   - A placeholder is inserted for the deferred content
-   - The deferred content streams in once ready
-   - The placeholder is replaced with the actual content
+When you use `defer(Component)`, FUNSTACK Static creates **additional RSC payloads** for the rendering result of `<Component />`. This results in an additional emit of RSC payload files like `/.funstack/rsc/fun:rsc-payload/b5698be72eea3c37`.
 
-## Example: Mixing Static and Deferred Content
-
-```tsx
-import { defer } from "@funstack/static/server";
-
-// Fast, static header
-function Header() {
-  return (
-    <header>
-      <h1>My Blog</h1>
-    </header>
-  );
-}
-
-// Slow, data-fetching component
-async function RecentPosts() {
-  const posts = await fetchRecentPosts();
-  return <PostList posts={posts} />;
-}
-
-// Page component
-function BlogPage() {
-  return (
-    <div>
-      <Header /> {/* Renders immediately */}
-      {defer(RecentPosts)} {/* Streams when ready */}
-    </div>
-  );
-}
-```
-
-## MDX Integration
-
-`defer()` works seamlessly with MDX files:
-
-```tsx
-import { defer } from "@funstack/static/server";
-import BlogPost from "./BlogPost.mdx";
-
-route({
-  path: "/blog/post",
-  component: defer(BlogPost),
-});
-```
-
-## Best Practices
-
-1. **Defer at the route level** for pages with async data fetching
-2. **Don't over-defer** - only use it when you have genuinely slow components
-3. **Consider user experience** - streaming can cause layout shifts; design accordingly
-4. **Test without defer** first to understand baseline performance
-
-## See Also
-
-- [funstackStatic()](/api/funstack-static) - Main plugin configuration
-- [React Server Components](/concepts/rsc) - Understanding async components
+In the main RSC payload, the `defer` call is replaced with a client component `<ClientWrapper moduleId="fun:rsc-payload/b5698be72eea3c37" />`. This component is responsible for fetching the additional RSC payload from client and renders it when it's ready.

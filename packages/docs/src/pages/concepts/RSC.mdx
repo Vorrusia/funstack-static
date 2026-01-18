@@ -1,6 +1,6 @@
 # React Server Components
 
-React Server Components (RSC) are a new paradigm for building React applications where components can run on the server (or at build time) rather than in the browser.
+[React Server Components (RSC)](https://react.dev/reference/rsc/server-components) are a new paradigm for building React applications where components can run on the server (or at build time) rather than in the browser.
 
 ## What Are Server Components?
 
@@ -28,28 +28,20 @@ async function UserList() {
 }
 ```
 
-## Server Components vs Client Components
-
-| Feature              | Server Components | Client Components |
-| -------------------- | ----------------- | ----------------- |
-| Runs on              | Server/Build time | Browser           |
-| Can use hooks        | No                | Yes               |
-| Can use browser APIs | No                | Yes               |
-| Can be async         | Yes               | No                |
-| Bundle size impact   | Zero              | Included          |
-| Data fetching        | Direct            | Via APIs          |
-
 ## FUNSTACK Static and RSC
 
-FUNSTACK Static leverages React Server Components to build **high-performance SPAs**:
+FUNSTACK Static is a React framework **without a runtime server** that still leverages React Server Components to **improve performance of traditional SPAs**.
 
-1. Server Components run at **build time** to pre-render your app
-2. Client Components hydrate in the browser for **full SPA interactivity**
-3. No runtime server required - deploy anywhere that serves static files
-4. Get RSC performance benefits without server infrastructure complexity
+All server components are rendered at **build time**, producing RSC Payloads that are fetched by the client (browser) at runtime.
+
+While dynamic server-side logic isn't possible with FUNSTACK Static, you can still benefit from RSC features like:
+
+- Reduced bundle size
+- Build-time data fetching
+- Async components
 
 ```tsx
-// Build-time data fetching
+// Build-time data fetching with an async Server Component
 async function BlogPost({ slug }: { slug: string }) {
   // Runs during build, not at runtime
   const content = await fetchMarkdownFile(`./posts/${slug}.md`);
@@ -62,27 +54,7 @@ async function BlogPost({ slug }: { slug: string }) {
 }
 ```
 
-## Async Components
-
-One of the most powerful features of Server Components is native async support:
-
-```tsx
-// No useEffect, no loading states - just async/await
-async function WeatherWidget() {
-  const weather = await fetch("https://api.weather.com/current").then((r) =>
-    r.json(),
-  );
-
-  return (
-    <div>
-      <span>{weather.temperature}°</span>
-      <span>{weather.condition}</span>
-    </div>
-  );
-}
-```
-
-> **Note:** In FUNSTACK Static, async data is fetched at build time. For truly dynamic data, you'll need client-side JavaScript.
+**Note:** in FUNSTACK Static, async data is fetched at build time. For truly dynamic data, you'll need client-side JavaScript and fetch data as you would do in pre-RSC SPAs.
 
 ## Composing Server and Client Components
 
@@ -107,7 +79,7 @@ async function ProductPage({ id }: { id: string }) {
 
 ```tsx
 // Client Component (runs in browser)
-// Add "use client" directive at the top of your file
+"use client";
 
 import { useState } from "react";
 
@@ -124,13 +96,13 @@ export function AddToCartButton({ productId }: { productId: string }) {
 
 ## Benefits for SPAs
 
-### 1. Instant Initial Load
+### 1. Reduced Bundle Size
 
-Server Components pre-render your app at build time. Users see content immediately while the SPA hydrates in the background.
+Unlike traditional SPAs where all code ships to the client, Server Components never reach the browser. Only static HTML (and glue code for client components) is sent.
 
-### 2. Reduced Bundle Size
+### 2. Reduced Warm-Up Time
 
-Server Component code stays on the build server. Only Client Components and their dependencies ship to the browser.
+The browser does't need to execute Server Component code, leading to less JavaScript to parse and run on initial load. Only ship the code needed for interactivity.
 
 ### 3. Build-Time Data Fetching
 
@@ -146,7 +118,7 @@ async function BlogIndex() {
 
 ### 4. Full SPA Interactivity
 
-After hydration, your app behaves like any SPA - client-side navigation, state management, and all the interactivity you need:
+On the browser, your app behaves like any SPA - client-side navigation, state management, and all the interactivity you need:
 
 ```tsx
 // Client Component for interactive features
@@ -196,9 +168,9 @@ When using FUNSTACK Static, keep in mind:
 
 1. **Build-time data** - Server Component data is fetched during build. For runtime data, use Client Components with standard fetch patterns.
 2. **No server context** - No access to cookies, headers, or request data in Server Components.
-3. **Pre-rendered routes** - Each route is pre-rendered at build time. Dynamic route segments work, but the content is fixed at build.
+3. **Only one entrypoint** - FUNSTACK Static apps are single-page applications, without any routing built in. All routing and navigation must be handled client-side.
 
-This makes FUNSTACK Static ideal for apps where most content is known at build time, with Client Components handling any truly dynamic features.
+This makes FUNSTACK Static ideal for developers looking to leverage RSC benefits while deploying simple static SPAs without server infrastructure.
 
 ## See Also
 

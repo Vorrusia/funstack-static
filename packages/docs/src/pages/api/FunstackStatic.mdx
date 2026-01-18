@@ -5,14 +5,14 @@ The `funstackStatic()` function is the main Vite plugin that enables React Serve
 ## Import
 
 ```typescript
-import { funstackStatic } from "@funstack/static";
+import funstackStatic from "@funstack/static";
 ```
 
 ## Usage
 
 ```typescript
 // vite.config.ts
-import { funstackStatic } from "@funstack/static";
+import funstackStatic from "@funstack/static";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -61,7 +61,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
 
 **Type:** `string`
 
-Path to the app component file. This component defines your application's routes and content.
+Path to the app component file. This component defines your application's content.
 
 ```typescript
 funstackStatic({
@@ -70,22 +70,20 @@ funstackStatic({
 });
 ```
 
-The app component typically uses the Router to define routes:
-
 ```tsx
 // src/App.tsx
-import { Router } from "@funstack/router";
-import { route } from "@funstack/router/server";
-
-const routes = [
-  route({ path: "/", component: <HomePage /> }),
-  route({ path: "/about", component: <AboutPage /> }),
-];
 
 export default function App() {
-  return <Router routes={routes} />;
+  return (
+    <div>
+      <h1>Welcome to My Site</h1>
+      {/* Your fantastic application goes here */}
+    </div>
+  );
 }
 ```
+
+**Note:** if your app has multiple pages, you can use a routing library here just like in a traditional SPA.
 
 ### publicOutDir (optional)
 
@@ -120,18 +118,16 @@ export default defineConfig({
 });
 ```
 
-## How It Works
+## Vite Commands
 
-1. **Development:** The plugin starts a development server with hot module replacement. Server Components run on-demand, and Client Components hot-reload instantly.
+You can use the same Vite commands you would use in a normal Vite project:
 
-2. **Build:** During production build, the plugin:
-   - Discovers all routes defined in your app
-   - Pre-renders each route using React Server Components
-   - Bundles Client Components for hydration
-   - Outputs static files to `publicOutDir` that hydrate into a full SPA
+- `vite dev` - Starts the development server
+- `vite build` - Builds the static files
+- `vite preview` - Previews the built static files locally
 
 ## See Also
 
-- [Getting Started](/getting-started) - Quick start guide
-- [defer()](/api/defer) - Deferred rendering for streaming
-- [React Server Components](/concepts/rsc) - Understanding RSC
+- [Getting Started](/funstack-static/getting-started) - Quick start guide
+- [defer()](/funstack-static/api/defer) - Deferred rendering for streaming
+- [React Server Components](/funstack-static/concepts/rsc) - Understanding RSC

@@ -13,18 +13,28 @@ interface NavSection {
 const navigation: NavSection[] = [
   {
     title: "Getting Started",
-    items: [{ label: "Introduction", href: "/getting-started" }],
+    items: [
+      { label: "Introduction", href: "/funstack-static/getting-started" },
+    ],
   },
   {
     title: "API Reference",
     items: [
-      { label: "funstackStatic()", href: "/api/funstack-static" },
-      { label: "defer()", href: "/api/defer" },
+      {
+        label: "funstackStatic()",
+        href: "/funstack-static/api/funstack-static",
+      },
+      { label: "defer()", href: "/funstack-static/api/defer" },
     ],
   },
   {
     title: "Concepts",
-    items: [{ label: "React Server Components", href: "/concepts/rsc" }],
+    items: [
+      {
+        label: "React Server Components",
+        href: "/funstack-static/concepts/rsc",
+      },
+    ],
   },
 ];
 
