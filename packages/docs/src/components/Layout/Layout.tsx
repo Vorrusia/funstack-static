@@ -1,5 +1,6 @@
 import type React from "react";
 import { Header } from "../Header/Header";
+import { MobileMenu } from "../MobileMenu/MobileMenu";
 import { Sidebar } from "../Sidebar/Sidebar";
 import styles from "./Layout.module.css";
 
@@ -19,7 +20,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
   return (
     <div className={`${styles.layout} ${layoutClass}`}>
-      <Header />
+      <Header menuSlot={<MobileMenu />} />
       <div className={styles.main}>
         {variant === "docs" && <Sidebar />}
         <main

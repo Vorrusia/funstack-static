@@ -1,16 +1,16 @@
 import styles from "./Sidebar.module.css";
 
-interface NavItem {
+export interface NavItem {
   label: string;
   href: string;
 }
 
-interface NavSection {
+export interface NavSection {
   title: string;
   items: NavItem[];
 }
 
-const navigation: NavSection[] = [
+export const navigation: NavSection[] = [
   {
     title: "Getting Started",
     items: [
