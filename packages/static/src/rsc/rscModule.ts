@@ -1,3 +1,16 @@
+/**
+ * ID is prefixed with this string to form module path.
+ */
+const rscPayloadIDPrefix = "fun:rsc-payload/";
+
+/**
+ * Add prefix to raw ID to form payload ID so that the ID is
+ * distinguishable from other possible IDs.
+ */
+export function getPayloadIDFor(rawId: string): string {
+  return `${rscPayloadIDPrefix}${rawId}`;
+}
+
 const rscModulePathPrefix = "/.funstack/rsc/";
 
 export function getModulePathFor(id: string): string {

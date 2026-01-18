@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { renderToReadableStream } from "@vitejs/plugin-rsc/react/rsc";
 import { ClientWrapper } from "#rsc-client";
 import { drainStream } from "../util/drainStream";
+import { getPayloadIDFor } from "./rscModule";
 
 export interface SendEntry {
   state: SendEntryState;
@@ -168,7 +169,7 @@ const referenceIDMap = new WeakMap<FC<{}>, string>();
 export function send(component: FC<{}>): React.ReactNode {
   let id = referenceIDMap.get(component);
   if (id === undefined) {
-    id = crypto.randomUUID();
+    id = getPayloadIDFor(crypto.randomUUID());
   }
   referenceIDMap.set(component, id);
   sendRegistry.register(component, id);

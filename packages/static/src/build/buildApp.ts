@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 import type { ViteBuilder, MinimalPluginContextWithoutEnvironment } from "vite";
 import { rscPayloadPath } from "./rscPath";
 import { getModulePathFor } from "../rsc/rscModule";
+import { processRscComponents } from "./rscProcessor";
 
 export async function buildApp(
   builder: ViteBuilder,
@@ -22,17 +23,28 @@ export async function buildApp(
   const baseDir = config.environments.client.build.outDir;
   const { html, appRsc, sendRegistry } = await entry.build();
   await writeFileStream(path.join(baseDir, "index.html"), html, context);
-  await writeFileStream(
-    path.join(baseDir, rscPayloadPath.replace(/^\//, "")),
+
+  // Process RSC components with content-based hashes for deterministic file names
+  const { components, appRscContent } = await processRscComponents(
+    sendRegistry.loadAll(),
     appRsc,
     context,
   );
-  for await (const { id, data } of sendRegistry.loadAll()) {
+
+  // Write the processed RSC payload
+  await writeFileNormal(
+    path.join(baseDir, rscPayloadPath.replace(/^\//, "")),
+    appRscContent,
+    context,
+  );
+
+  // Write processed components with hash-based IDs
+  for (const { finalId, finalContent } of components) {
     const filePath = path.join(
       baseDir,
-      getModulePathFor(id).replace(/^\//, ""),
+      getModulePathFor(finalId).replace(/^\//, ""),
     );
-    await writeFileNormal(filePath, data, context);
+    await writeFileNormal(filePath, finalContent, context);
   }
 }
 
