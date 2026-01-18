@@ -1,12 +1,9 @@
 import { describe, it, expect } from "vitest";
-import {
-  findReferencedIds,
-  topologicalSort,
-} from "./dependencyGraph";
+import { findReferencedIds, topologicalSort } from "./dependencyGraph";
 
 describe("findReferencedIds", () => {
   it("finds IDs that appear in content", () => {
-    const content = 'Some content with id-1 and id-2 referenced';
+    const content = "Some content with id-1 and id-2 referenced";
     const allKnownIds = new Set(["id-1", "id-2", "id-3"]);
 
     const result = findReferencedIds(content, allKnownIds);
@@ -33,7 +30,7 @@ describe("findReferencedIds", () => {
   });
 
   it("finds IDs with special characters", () => {
-    const content = 'Reference to fun:rsc-payload/abc-123 here';
+    const content = "Reference to fun:rsc-payload/abc-123 here";
     const allKnownIds = new Set([
       "fun:rsc-payload/abc-123",
       "fun:rsc-payload/def-456",
