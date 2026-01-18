@@ -19,6 +19,11 @@ export const Home: React.FC = () => {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
+          <img
+            src={`${import.meta.env.BASE_URL}FUNSTACK_Static_Hero_small.png`}
+            alt="FUNSTACK Static"
+            className={styles.heroImage}
+          />
           <span className={styles.badge}>React Server Components</span>
           <h1 className={styles.title}>SPAs Powered by RSC</h1>
           <p className={styles.subtitle}>
