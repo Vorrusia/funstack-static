@@ -29,3 +29,32 @@ To release a new version of the `@funstack/static` package, follow these steps:
 - The tag name should be `x.y.z` where `x.y.z` is the new version.
 
 5. Inform the user that the release has been created successfully, providing the URL to the release page on GitHub.
+
+## Writing Release Notes
+
+When writing release notes, consider the following structure:
+
+```markdown
+## What's Changed
+
+### Breaking Changes
+
+- Change defer API to accept JSX element instead of component (#14)
+
+### Features
+
+- Add cache busting for main RSC payload (#16)
+
+### Improvements
+
+- Simplify RSC payload path (#15)
+
+**Full Changelog**: https://github.com/uhyo/funstack-static/compare/0.0.1...0.0.2
+```
+
+Notes:
+
+- Highlight breaking changes if any.
+- Group changes into categories like "Features", "Improvements", "Fixes", etc.
+- Documentation updates and dependency updates should be omitted unless they are significant (e.g. breaking changes).
+- Provide a link to the full changelog comparing the previous version and the new version.
