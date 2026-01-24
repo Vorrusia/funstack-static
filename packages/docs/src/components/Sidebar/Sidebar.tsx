@@ -28,6 +28,10 @@ export const navigation: NavSection[] = [
         label: "How It Works",
         href: "/funstack-static/learn/how-it-works",
       },
+      {
+        label: "Optimizing RSC Payloads",
+        href: "/funstack-static/learn/optimizing-payloads",
+      },
     ],
   },
   {

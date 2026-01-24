@@ -5,6 +5,7 @@ import { Layout } from "./components/Layout/Layout";
 import DeferApi from "./pages/api/Defer.mdx";
 import FunstackStaticApi from "./pages/api/FunstackStatic.mdx";
 import HowItWorks from "./pages/learn/HowItWorks.mdx";
+import OptimizingPayloads from "./pages/learn/OptimizingPayloads.mdx";
 import RSCConcept from "./pages/learn/RSC.mdx";
 import GettingStarted from "./pages/GettingStarted.mdx";
 import { Home } from "./pages/Home";
@@ -43,6 +44,10 @@ const routes: RouteDefinition[] = [
       route({
         path: "/learn/rsc",
         component: <Layout>{defer(<RSCConcept />)}</Layout>,
+      }),
+      route({
+        path: "/learn/optimizing-payloads",
+        component: <Layout>{defer(<OptimizingPayloads />)}</Layout>,
       }),
       route({
         path: "*",

@@ -1,0 +1,105 @@
+# Optimizing RSC Payloads
+
+FUNSTACK Static uses React Server Components (RSC) to pre-render your application at build time. By default, all content is bundled into a single RSC payload. This page explains how to split that payload into smaller chunks for better loading performance.
+
+## The Default Behavior
+
+Without any optimization, your entire application is rendered into one RSC payload file:
+
+```
+dist/public/funstack__/
+└── fun:rsc-payload/
+    └── b62ec6668fd49300.txt    ← Contains everything
+```
+
+This means users must download the entire payload before seeing any content - even if they only need one page of a multi-page application.
+
+**Note:** RSC payloads contain the rendering results of server components only; client components and their JavaScript bundles are handled separately. However, it is still important to optimize RSC payload sizes because the recommended best practice is to keep as much of your UI as server components as possible.
+
+## Chunking with defer()
+
+The `defer()` function lets you split your application into multiple RSC payloads. Each `defer()` call creates a separate payload file that loads on-demand when that component renders.
+
+```tsx
+import { defer } from "@funstack/static/server";
+
+// Instead of this:
+<HeavyContent />
+
+// Do this:
+<Suspense fallback={<p>Loading...</p>}>
+  {defer(<HeavyContent />)}
+</Suspense>
+```
+
+The content inside `defer()` is still rendered at build time, but it's stored in a separate file and fetched only when needed.
+
+**Note:** use of `defer()` requires a `<Suspense>` boundary to handle the loading state while the payload is being fetched.
+
+## Route-Level Optimization
+
+The most impactful use of `defer()` is wrapping your route components. This ensures users only download the payload for the page they're viewing:
+
+```tsx
+import { defer } from "@funstack/static/server";
+import { route } from "@funstack/router/server";
+import HomePage from "./pages/Home";
+import AboutPage from "./pages/About";
+import DocsPage from "./pages/Docs";
+
+const routes = [
+  route({
+    path: "/",
+    component: defer(<HomePage />),
+  }),
+  route({
+    path: "/about",
+    component: defer(<AboutPage />),
+  }),
+  route({
+    path: "/docs",
+    component: defer(<DocsPage />),
+  }),
+];
+```
+
+With this setup:
+
+- Visiting `/` only downloads the Home page payload
+- Navigating to `/about` fetches the About page payload on-demand
+- Users see content faster because they're not waiting for pages they haven't visited
+
+## Output Structure
+
+After building with route-level `defer()`, your output looks like this:
+
+```
+dist/public/funstack__/
+└── fun:rsc-payload/
+    ├── a3f2b1c9d8e7f6a5.txt ← Home page
+    ├── b5698be72eea3c37.txt ← About page
+    ├── b62ec6668fd49300.txt ← Main app shell
+    └── c7d8e9f0a1b2c3d4.txt ← Docs page
+```
+
+Each payload file has a **content-based hash** in its filename. This enables aggressive browser caching - the file only changes when its content changes.
+
+**Note:** during development, UUIDs are used instead of content hashes for faster rebuilds. Content hashes are applied during production builds.
+
+## Best Practices
+
+**Always wrap route components** - This is the single most important optimization. It prevents users from downloading content for pages they may never visit.
+
+**Use Suspense boundaries** - Every `defer()` call must be inside a `<Suspense>` boundary. The fallback is shown while the payload is being fetched.
+
+```tsx
+<Suspense fallback={<PageSkeleton />}>{defer(<PageContent />)}</Suspense>
+```
+
+**Consider below-the-fold content** - Content hidden in collapsed sections, tabs, or modals is a good candidate for `defer()` since users may never need it.
+
+## See Also
+
+- [defer()](/funstack-static/api/defer) - API reference with full signature and technical details
+- [How It Works](/funstack-static/learn/how-it-works) - Overall FUNSTACK Static architecture
+- [React Server Components](/funstack-static/learn/rsc) - Understanding RSC fundamentals
