@@ -36,8 +36,8 @@ importers:
   packages/docs:
     dependencies:
       '@funstack/router':
-        specifier: 0.0.3-alpha.1
-        version: 0.0.3-alpha.1(react@19.2.3)
+        specifier: 0.0.4
+        version: 0.0.4(react@19.2.3)
       '@funstack/static':
         specifier: workspace:*
         version: link:../static
@@ -459,8 +459,8 @@ packages:
       '@exodus/crypto':
         optional: true
 
-  '@funstack/router@0.0.3-alpha.1':
-    resolution: {integrity: sha512-Y8ybg1on0sPf02mddMVqKBUCk0e1KNsIBjEsvj4acZ4BF0y3MJqkZAGJNezUuAXmsk/PwiOwairHqlsRBzqcBg==}
+  '@funstack/router@0.0.4':
+    resolution: {integrity: sha512-oM80tKFeLku7EvY61RUE672p1if0L0r7pIsfmtTdqCn6Ff5ZCvfGxp6bdU7ZJO7MN1p2bGlJOBUKDZssB/lyUQ==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -2276,7 +2276,7 @@ snapshots:
 
   '@exodus/bytes@1.8.0': {}
 
-  '@funstack/router@0.0.3-alpha.1(react@19.2.3)':
+  '@funstack/router@0.0.4(react@19.2.3)':
     dependencies:
       react: 19.2.3
 
