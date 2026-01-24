@@ -28,11 +28,11 @@ export const navigation: NavSection[] = [
     ],
   },
   {
-    title: "Concepts",
+    title: "Learn",
     items: [
       {
         label: "React Server Components",
-        href: "/funstack-static/concepts/rsc",
+        href: "/funstack-static/learn/rsc",
       },
     ],
   },

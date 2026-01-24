@@ -27,10 +27,10 @@ export const Header: React.FC<HeaderProps> = ({ menuSlot }) => {
             API
           </a>
           <a
-            href={`${import.meta.env.BASE_URL}concepts/rsc`}
+            href={`${import.meta.env.BASE_URL}learn/rsc`}
             className={styles.navLink}
           >
-            Concepts
+            Learn
           </a>
           <a
             href="https://github.com/uhyo/funstack-static"
