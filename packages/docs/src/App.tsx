@@ -7,6 +7,7 @@ import FunstackStaticApi from "./pages/api/FunstackStatic.mdx";
 import RSCConcept from "./pages/concepts/RSC.mdx";
 import GettingStarted from "./pages/GettingStarted.mdx";
 import { Home } from "./pages/Home";
+import { NotFound } from "./pages/NotFound";
 import { Router } from "./Router";
 
 const routes: RouteDefinition[] = [
@@ -37,6 +38,14 @@ const routes: RouteDefinition[] = [
       route({
         path: "/concepts/rsc",
         component: <Layout>{defer(<RSCConcept />)}</Layout>,
+      }),
+      route({
+        path: "*",
+        component: (
+          <Layout>
+            <NotFound />
+          </Layout>
+        ),
       }),
     ],
   }),
